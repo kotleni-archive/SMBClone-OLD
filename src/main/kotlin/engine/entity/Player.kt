@@ -13,7 +13,7 @@ class Player(override var world: World) : Entity(world) {
     var direction = Direction.RIGHT
 
     fun jump() {
-        thread { for(i in 0..70) { /* if(!isCanMoveUp()) { break }; */ position.y -= 2; Thread.sleep(1) } }
+        thread { for(i in 0..70) { if(!isCanMoveUp()) { break }; position.y -= 2; Thread.sleep(1) } }
     }
 
     fun dash() {
