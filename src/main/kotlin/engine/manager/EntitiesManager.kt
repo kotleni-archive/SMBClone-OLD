@@ -1,0 +1,33 @@
+package engine.manager
+
+import engine.World
+import engine.entity.Entity
+import engine.entity.Player
+
+class EntitiesManager(var world: World) {
+    private val entities = ArrayList<Entity>()
+
+    fun addEntity(e: Entity) {
+        entities.add(e)
+    }
+
+    fun removeEntity(e: Entity) {
+        entities.remove(e)
+    }
+
+    fun getEntity(id: Int): Entity {
+        return entities[id]
+    }
+
+    fun getEntitiesList(): List<Entity> {
+        return entities
+    }
+
+    fun getPlayer(): Player? {
+        entities.forEach {
+            if(it is Player) return it
+        }
+
+        return null
+    }
+}
