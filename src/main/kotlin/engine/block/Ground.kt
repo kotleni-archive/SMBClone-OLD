@@ -1,8 +1,6 @@
 package engine.block
 
-import engine.World
-import engine.type.Pos
-import engine.type.Size
+import engine.type.World
 import java.awt.Color
 import java.awt.Graphics
 

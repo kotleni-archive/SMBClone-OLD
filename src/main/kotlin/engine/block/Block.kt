@@ -1,6 +1,6 @@
 package engine.block
 
-import engine.World
+import engine.type.World
 import engine.type.Pos
 import engine.type.Size
 import java.awt.Graphics

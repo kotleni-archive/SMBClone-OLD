@@ -2,22 +2,23 @@ package engine.view
 
 import engine.Globals
 import engine.LOG
+import engine.menu.Item
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.event.KeyEvent
 import java.awt.font.FontRenderContext
-
-
+import java.awt.font.TextAttribute
 
 
 class MenuView() : View() {
     private val margin = 80
     private val padding = 8
+
     private val items = arrayListOf(
-        "Play game",
-        // "How to play",
-        "Quit",
+        Item("ОДИНОЧНЫЙ РЕЖИМ", false),
+        Item("ТЕСТОВАЯ КОМНАТА", true),
+        Item("ВЫХОД", true)
     )
     private var selectedItem = 0
     private var selectorWidth = 0
@@ -33,7 +34,7 @@ class MenuView() : View() {
         items.forEach {
             graphics.font = Font("monospace", Font.BOLD, 18)
             val frc = FontRenderContext(null, true, true)
-            val bounds = graphics.font.getStringBounds(it, frc)
+            val bounds = graphics.font.getStringBounds(it.title, frc)
 
             if(bounds.width > selectorWidth)
                 selectorWidth = bounds.width.toInt()
@@ -42,55 +43,64 @@ class MenuView() : View() {
 
     private fun unlockDebugMode() {
         if(!Globals.DEBUG_MODE) {
-            items.add("LOL! You are developer? WOW! Welcome to your project, sir! :D")
+            items.add(Item("You are developer? Welcome to your project, sir!", false))
             calcSelectorWidth()
 
             Globals.DEBUG_MODE = true
 
-            LOG("Debug mode enabled")
+            LOG("Включен режим отладки")
         }
     }
 
     private fun selectItem(id: Int) {
         when(id) {
             0 -> { // play
+//                closeWindow()
+//                GameView().also {
+//                    it.createWindow()
+//                    it.loadWorld("a1")
+//                }
+            }
+
+            1 -> {
                 closeWindow()
                 GameView().also {
                     it.createWindow()
+                    it.loadWorld("test_room")
                 }
             }
 
             // quit
-            1 -> { closeWindow() }
+            2 -> { closeWindow() }
         }
     }
 
     override fun updateDrawing(graphics: Graphics) {
-        graphics.color = Color.LIGHT_GRAY
+        graphics.color = Color.DARK_GRAY
         graphics.fillRect(0, 0, width, height)
 
         var i = 0
         items.forEach {
-            graphics.color = Color.WHITE
+            graphics.color = if(it.isEnabled) Color.WHITE else Color.LIGHT_GRAY
             graphics.font = Font("monospace", Font.BOLD, 18)
-            graphics.drawString(it, margin, margin + ((padding * 4) * i))
+            graphics.drawString(it.title, margin, margin + ((padding * 4) * i))
+
+            val frc = FontRenderContext(null, true, true)
+            val bounds = graphics.font.getStringBounds(items[i].title, frc)
 
             if(selectedItem == i) {
-                val frc = FontRenderContext(null, true, true)
-                val bounds = graphics.font.getStringBounds(items[i], frc)
-
                 graphics.drawRect(
                     margin - padding,
                     ((margin + ((padding * 4) * i)) - bounds.height.toInt()) - padding,
-                    selectorWidth * 2 + (padding * 2), // bounds.width.toInt() + (padding * 2),
-                    bounds.height.toInt() + (padding * 2)
+                    (selectorWidth * 2) + (padding * 2), // bounds.width.toInt() + (padding * 2),
+                    bounds.height.toInt() + (padding * 3)
                 )
 
                 graphics.fillRect(
                     (margin - padding) - 10,
                     ((margin + ((padding * 4) * i)) - bounds.height.toInt()) - padding,
-                    10,
-                    bounds.height.toInt() + (padding * 2) + 1
+                    10, // bounds.width.toInt() + (padding * 2),
+                    bounds.height.toInt() + (padding * 3) + 1
                 )
             }
 

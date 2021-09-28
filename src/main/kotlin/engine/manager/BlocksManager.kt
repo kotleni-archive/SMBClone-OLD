@@ -1,6 +1,6 @@
 package engine.manager
 
-import engine.World
+import engine.type.World
 import engine.block.Block
 
 class BlocksManager(var world: World) {

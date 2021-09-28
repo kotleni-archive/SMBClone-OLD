@@ -1,7 +1,7 @@
 package engine.entity
 
 import engine.type.Direction
-import engine.World
+import engine.type.World
 import engine.block.Block
 import engine.helper.CollisionHelper
 import engine.type.Pos
@@ -18,7 +18,7 @@ open class Entity(open var world: World) {
     // если стоит на земле
     open fun isGrounded(): Boolean {
         world.blocksManager.getBlocksList().forEach {
-            if(this.isCollide(it))
+            if(this.isCollide(it) && this.isCanMoveUp() && !this.isCanMoveDown())
                 return true
         }
 
@@ -48,6 +48,32 @@ open class Entity(open var world: World) {
     // если касается блока
     open fun isCollide(block: Block): Boolean {
         return CollisionHelper.isCollideEntityWithBlock(this, block)
+    }
+
+    // если может двигаться в верх
+    open fun isCanMoveUp(): Boolean {
+        world.blocksManager.getBlocksList().forEach {
+            if(isCollide(it)) {
+                if(CollisionHelper.isCollideBlockVerticalTop(this, it)) { // если не может
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
+
+    // если может двигаться вниз
+    open fun isCanMoveDown(): Boolean {
+        world.blocksManager.getBlocksList().forEach {
+            if(isCollide(it)) {
+                if(CollisionHelper.isCollideBlockVerticalBottom(this, it)) { // если не может
+                    return false
+                }
+            }
+        }
+
+        return true
     }
 
     // если энтити может подвинуться

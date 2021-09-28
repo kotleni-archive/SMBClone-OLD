@@ -17,19 +17,20 @@ open class View() : JFrame(), GameKeyListener {
     private val tpsMetter = TpsMetter()
 
     open fun createWindow() {
-        this.size =  Dimension(1400, 900)
+        this.size =  Dimension(1000, 600)
+        this.title = Constants.WINDOW_NAME
         this.defaultCloseOperation = EXIT_ON_CLOSE
         this.isVisible = true
 
         this.initKeyListener(this)
 
         startBackgroundLoops()
-        LOG("Window created: ${this::class.simpleName}")
+        LOG("Окно закрыто: ${this::class.simpleName}")
     }
 
     open fun closeWindow() {
         isVisible = false
-        LOG("Window closed: ${this::class.simpleName}")
+        LOG("Окно закрыто: ${this::class.simpleName}")
     }
 
     open fun startBackgroundLoops() {

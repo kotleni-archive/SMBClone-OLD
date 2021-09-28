@@ -1,16 +1,13 @@
 package engine.view
 
 import engine.Constants
-import engine.Loader
-import engine.World
-import engine.listener.GameKeyListener
+import engine.Globals
+import engine.toolkit.Loader
+import engine.type.World
 import engine.type.Size
 import java.awt.Color
-import java.awt.Dimension
 import java.awt.Graphics
-import java.awt.Toolkit
 import java.awt.event.KeyEvent
-import javax.swing.JFrame
 import kotlin.concurrent.thread
 
 class GameView() : View() {
@@ -20,8 +17,10 @@ class GameView() : View() {
 
     override fun createWindow() {
         super.createWindow()
+    }
 
-        Loader.loadWorld(world, "a")
+    fun loadWorld(name: String) {
+        Loader.loadWorld(world, name)
     }
 
     override fun startBackgroundLoops() {
@@ -46,6 +45,14 @@ class GameView() : View() {
                     MenuView().also {
                         it.createWindow()
                     }
+                }
+
+                KeyEvent.VK_F2 -> {
+                    if(Globals.DEBUG_MODE)
+                        world.entitiesManager.getPlayer()?.also {
+                            it.position.x = 0
+                            it.position.y = 0
+                        }
                 }
             }
         }

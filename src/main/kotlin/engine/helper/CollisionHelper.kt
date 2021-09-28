@@ -1,6 +1,7 @@
 package engine.helper
 
-import engine.World
+import engine.Constants
+import engine.type.World
 import engine.block.Block
 import engine.entity.Entity
 import java.awt.Rectangle
@@ -71,7 +72,7 @@ object CollisionHelper {
 
     // проверить, соприкасается ли энтити с блоком слева
     fun isCollideBlockHorizontalLeft(entity: Entity, block: Block): Boolean {
-        val offset = 4
+        val offset = Constants.COLLIDE_MARGIN
         if(entity.position.x < (block.position.x + block.size.w)) {
             if(entity.position.x > (block.position.x + block.size.w - offset)) {
                 return true
@@ -83,7 +84,7 @@ object CollisionHelper {
 
     // проверить, соприкасается ли энтити с блоком справа
     fun isCollideBlockHorizontalRight(entity: Entity, block: Block): Boolean {
-        val offset = 4
+        val offset = Constants.COLLIDE_MARGIN
         if((entity.position.x + entity.size.w) > block.position.x) {
             if((entity.position.x + entity.size.w - offset) < block.position.x) {
                 return true
@@ -95,8 +96,18 @@ object CollisionHelper {
 
     // проверить, соприкасается ли энтити с блоком внизу
     fun isCollideBlockVerticalBottom(entity: Entity, block: Block): Boolean {
-        val offset = 4
+        val offset = Constants.COLLIDE_MARGIN
         if((entity.position.y + entity.size.h - offset) < (block.position.y)) {
+            return true
+        }
+
+        return false
+    }
+
+    // проверить, соприкасается ли энтити с блоком вверху
+    fun isCollideBlockVerticalTop(entity: Entity, block: Block): Boolean {
+        val offset = Constants.COLLIDE_MARGIN
+        if((entity.position.y) > (block.position.y + block.size.h - offset)) {
             return true
         }
 

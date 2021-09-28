@@ -1,0 +1,25 @@
+{
+  "size" : [1400, 900],
+  "blocks" : [
+    { "type" : "ground", "pos" : [0, 500], "size" : [400, 10] },
+
+    { "type" : "ground", "pos" : [50, 460], "size" : [10, 40] },
+
+    { "type" : "ground", "pos" : [400, 500], "size" : [10, 60] },
+    { "type" : "ground", "pos" : [470, 500], "size" : [10, 60] },
+
+    { "type" : "ground", "pos" : [480, 500], "size" : [600, 10] },
+
+    { "type" :  "ground", "pos" : [580, 420], "size" : [30, 10]},
+    { "type" :  "ground", "pos" : [680, 380], "size" : [30, 10]},
+    { "type" :  "ground", "pos" : [700, 300], "size" : [10, 150]},
+    { "type" :  "ground", "pos" : [900, 300], "size" : [10, 200]},
+    { "type" :  "ground", "pos" : [700, 290], "size" : [210, 10]},
+
+    { "type" :  "ground", "pos" : [1080, 500], "size" : [10, 200]},
+    { "type" :  "ground", "pos" : [1080, 700], "size" : [100, 10]},
+
+    { "type" : "ground", "pos" : [0, 800], "size" : [1000, 10] }
+  ],
+  "entities" : []
+}

@@ -1,6 +1,6 @@
 package engine.manager
 
-import engine.World
+import engine.type.World
 import engine.entity.Entity
 import engine.entity.Player
 

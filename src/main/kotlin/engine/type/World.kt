@@ -1,15 +1,9 @@
-package engine
+package engine.type
 
-import engine.block.Block
-import engine.block.Ground
-import engine.entity.Player
 import engine.manager.BlocksManager
 import engine.manager.EntitiesManager
 import engine.manager.PhysicsManager
-import engine.type.Size
-import org.json.JSONObject
 import java.awt.Graphics
-import java.io.File
 
 class World(var size: Size) {
     val entitiesManager = EntitiesManager(this)

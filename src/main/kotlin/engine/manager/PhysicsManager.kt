@@ -1,6 +1,6 @@
 package engine.manager
 
-import engine.World
+import engine.type.World
 
 class PhysicsManager(var world: World) {
     fun updateForEntities() {
@@ -8,21 +8,27 @@ class PhysicsManager(var world: World) {
             var isNeedMove = true
 
             if(!entity.isInWorld()) { // если не в пределах мира
-                isNeedMove = false
+                entity.position.x = 0
+                entity.position.y = 0
             }
 
             // проверка колизии с блоками
             world.blocksManager.getBlocksList().forEach {  block ->
-                if(entity.isCollide(block)) { // если касается блока
+                if(entity.isCollide(block) && !entity.isCanMoveDown()) { // если касается блока
                     isNeedMove = false
                 }
             }
 
             // проверка колизии с энтити
             world.entitiesManager.getEntitiesList().forEach {  entity2 ->
-                if(entity != entity2 && entity.isCollide(entity2)) { // если касается энтити
+                if(entity != entity2 && entity.isCollide(entity2) && !entity.isCanMoveDown()) { // если касается энтити
                     isNeedMove = false
                 }
+            }
+
+            // если прилип к потолку, отцепляем
+            if(!entity.isCanMoveUp()) {
+                isNeedMove = true
             }
 
             // если ничего не мешает
