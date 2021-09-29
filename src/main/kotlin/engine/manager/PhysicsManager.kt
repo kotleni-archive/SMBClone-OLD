@@ -1,5 +1,6 @@
 package engine.manager
 
+import engine.LOG
 import engine.type.World
 
 class PhysicsManager(var world: World) {
@@ -14,6 +15,8 @@ class PhysicsManager(var world: World) {
             if(!entity.isInWorld()) { // если не в пределах мира
                 entity.position.x = 0
                 entity.position.y = 0
+
+                LOG("Игрок выпал из мира")
             }
 
             // проверка колизии с блоками

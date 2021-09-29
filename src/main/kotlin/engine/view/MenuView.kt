@@ -26,11 +26,6 @@ class MenuView() : View() {
             closeWindow()
             ViewLoader.openGameInWorld("test_room")
         },
-        Item("UI TEST", true) {
-            closeWindow()
-            ViewLoader.openUiTest()
-        },
-        Item("СВЯЗЬ С РАЗРАБОТЧИКОМ", false) { },
         Item("ВЫХОД", true) {
             closeWindow()
         }

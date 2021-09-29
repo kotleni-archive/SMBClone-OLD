@@ -8,4 +8,9 @@ data class Size(
         this.w = w
         this.h = h
     }
+
+    fun invert() {
+        w = -w
+        h = -h
+    }
 }

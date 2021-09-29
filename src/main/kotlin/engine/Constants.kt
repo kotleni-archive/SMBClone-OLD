@@ -8,5 +8,5 @@ object Constants {
     const val COLLIDE_MARGIN = 2
 
     const val WINDOW_NAME = "Test Game"
-    const val VERSION_CODE = 1
+    //const val VERSION_CODE = 1
 }

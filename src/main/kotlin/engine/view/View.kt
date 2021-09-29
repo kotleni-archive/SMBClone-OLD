@@ -5,7 +5,7 @@ import engine.toolkit.FpsMetter
 import engine.Globals
 import engine.LOG
 import engine.listener.GameKeyListener
-import engine.toolkit.TextureLoader
+import engine.toolkit.SpriteLoader
 import engine.toolkit.TpsMetter
 import engine.ui.UIElement
 import engine.ui.etc.UIKey
@@ -46,8 +46,8 @@ open class View() : JFrame(), GameKeyListener {
 
         this.initKeyListener(this)
 
-        Globals.textureLoader = TextureLoader()
-        Globals.textureLoader!!.loadAll()
+        Globals.spriteLoader = SpriteLoader()
+        Globals.spriteLoader!!.loadAll()
 
         // startBackgroundLoops()
         LOG("Окно откыто: ${this::class.simpleName}")
@@ -87,7 +87,7 @@ open class View() : JFrame(), GameKeyListener {
         if(Globals.DEBUG_MODE) {
             graphics.color = Color.WHITE
             graphics.font = Font("monospace", Font.BOLD, 14)
-            graphics.drawString("FPS: ${fpsMetter.getFps()} | TPS: ${tpsMetter.getTps()} | Ver: ${Constants.VERSION_CODE}", width - (190), 60)
+            graphics.drawString("FPS: ${fpsMetter.getFps()} | TPS: ${tpsMetter.getTps()}", width - (160), 60)
         }
 
         // синхронизация кадров

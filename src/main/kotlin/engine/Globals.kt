@@ -1,6 +1,6 @@
 package engine
 
-import engine.toolkit.TextureLoader
+import engine.toolkit.SpriteLoader
 
 object Globals {
     var DEBUG_MODE = true
@@ -8,5 +8,5 @@ object Globals {
     var WINDOW_WIDTH = 0
     var WINDOW_HEIGHT = 0
 
-    var textureLoader: TextureLoader? = null
+    var spriteLoader: SpriteLoader? = null
 }

@@ -1,18 +1,17 @@
 package engine.toolkit
 
 import engine.LOG
-import engine.block.Cobblestone
+import engine.block.Stone
 import engine.type.World
-import engine.block.Grass
+import engine.block.Brick
+import engine.block.Stone2
+import engine.block.Trap
 import engine.entity.Player
 import org.json.JSONArray
 import org.json.JSONObject
 import java.awt.Color
 import java.io.File
-import java.nio.file.FileSystem
-import java.nio.file.FileSystems
 import javax.imageio.ImageIO
-import javax.swing.ImageIcon
 
 object WorldLoader {
     fun compileAll(force: Boolean = false) {
@@ -54,17 +53,21 @@ object WorldLoader {
                 val pix = img.getRGB(x, y)
                 val clr = Color(pix)
 
-                if(clr.red == 0 && clr.green == 0 && clr.blue == 0) { // grass
-                    blocks.put(JSONObject().also {
-                        it.put("type", "grass")
-                        it.put("pos", JSONArray().also { it.put(x * 16); it.put(y * 16) })
-                        it.put("size", JSONArray().also { it.put(16); it.put(16) })
+                blocks.put(JSONObject().also {
+                    it.put("type", when(clr) {
+                        Color(0, 0, 0) -> "brick"
+                        Color(255, 0, 0) -> "stone"
+                        Color(0, 255, 0) -> "stone2"
+                        Color(0, 0, 255) -> "trap"
+                        else -> "/"
                     })
-                }
+                    it.put("pos", JSONArray().also { it.put(x * 16); it.put(y * 16) })
+                    it.put("size", JSONArray().also { it.put(16); it.put(16) })
+                })
 
-                if(clr.red == 0 && clr.green == 255 && clr.blue == 0) { // grass
+                if(clr.red == 0 && clr.green == 255 && clr.blue == 0) { // stone
                     blocks.put(JSONObject().also {
-                        it.put("type", "cobblestone")
+                        it.put("type", "stone")
                         it.put("pos", JSONArray().also { it.put(x * 16); it.put(y * 16) })
                         it.put("size", JSONArray().also { it.put(16); it.put(16) })
                     })
@@ -112,16 +115,32 @@ object WorldLoader {
             val block = blocks.getJSONObject(i)
 
             when(block.getString("type")) {
-                "grass" -> {
-                    world.blocksManager.addBlock(Grass(world).also {
+                "brick" -> {
+                    world.blocksManager.addBlock(Brick(world).also {
                         it.position.x = block.getJSONArray("pos").getInt(0)
                         it.position.y = block.getJSONArray("pos").getInt(1)
                         it.size.w = block.getJSONArray("size").getInt(0)
                         it.size.h = block.getJSONArray("size").getInt(1)
                     })
                 }
-                "cobblestone" -> {
-                    world.blocksManager.addBlock(Cobblestone(world).also {
+                "stone" -> {
+                    world.blocksManager.addBlock(Stone(world).also {
+                        it.position.x = block.getJSONArray("pos").getInt(0)
+                        it.position.y = block.getJSONArray("pos").getInt(1)
+                        it.size.w = block.getJSONArray("size").getInt(0)
+                        it.size.h = block.getJSONArray("size").getInt(1)
+                    })
+                }
+                "stone2" -> {
+                    world.blocksManager.addBlock(Stone2(world).also {
+                        it.position.x = block.getJSONArray("pos").getInt(0)
+                        it.position.y = block.getJSONArray("pos").getInt(1)
+                        it.size.w = block.getJSONArray("size").getInt(0)
+                        it.size.h = block.getJSONArray("size").getInt(1)
+                    })
+                }
+                "trap" -> {
+                    world.blocksManager.addBlock(Trap(world).also {
                         it.position.x = block.getJSONArray("pos").getInt(0)
                         it.position.y = block.getJSONArray("pos").getInt(1)
                         it.size.w = block.getJSONArray("size").getInt(0)
