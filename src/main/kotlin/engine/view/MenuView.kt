@@ -3,12 +3,14 @@ package engine.view
 import engine.Globals
 import engine.LOG
 import engine.menu.Item
+import engine.toolkit.ViewLoader
+import engine.toolkit.WorldLoader
+import engine.ui.UIText
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.event.KeyEvent
 import java.awt.font.FontRenderContext
-import java.awt.font.TextAttribute
 
 
 class MenuView() : View() {
@@ -16,18 +18,40 @@ class MenuView() : View() {
     private val padding = 8
 
     private val items = arrayListOf(
-        Item("ОДИНОЧНЫЙ РЕЖИМ", false),
-        Item("ТЕСТОВАЯ КОМНАТА", true),
-        Item("ВЫХОД", true)
+        Item("ОДИНОЧНЫЙ РЕЖИМ", true) {
+            closeWindow()
+            ViewLoader.openGameInWorld("world1")
+        },
+        Item("ТЕСТОВАЯ КОМНАТА", true) {
+            closeWindow()
+            ViewLoader.openGameInWorld("test_room")
+        },
+        Item("UI TEST", true) {
+            closeWindow()
+            ViewLoader.openUiTest()
+        },
+        Item("СВЯЗЬ С РАЗРАБОТЧИКОМ", false) { },
+        Item("ВЫХОД", true) {
+            closeWindow()
+        }
     )
     private var selectedItem = 0
     private var selectorWidth = 0
 
     override fun createWindow() {
         super.createWindow()
+        addUiElement("label1", UIText().also {
+            it.position.x = Globals.WINDOW_WIDTH - 170
+            it.position.y = Globals.WINDOW_HEIGHT - 20
+
+            it.text = "https://github.com/kotleni"
+        })
 
         // высчитываем максимальный размер плитки выбора
         calcSelectorWidth()
+
+        // компилируем все карты
+        WorldLoader.compileAll()
     }
 
     private fun calcSelectorWidth() {
@@ -43,7 +67,7 @@ class MenuView() : View() {
 
     private fun unlockDebugMode() {
         if(!Globals.DEBUG_MODE) {
-            items.add(Item("You are developer? Welcome to your project, sir!", false))
+            items.add(Item("You are developer? Welcome to your project, sir!", false) { })
             calcSelectorWidth()
 
             Globals.DEBUG_MODE = true
@@ -53,29 +77,10 @@ class MenuView() : View() {
     }
 
     private fun selectItem(id: Int) {
-        when(id) {
-            0 -> { // play
-//                closeWindow()
-//                GameView().also {
-//                    it.createWindow()
-//                    it.loadWorld("a1")
-//                }
-            }
-
-            1 -> {
-                closeWindow()
-                GameView().also {
-                    it.createWindow()
-                    it.loadWorld("test_room")
-                }
-            }
-
-            // quit
-            2 -> { closeWindow() }
-        }
+        items[id].onSelected.invoke()
     }
 
-    override fun updateDrawing(graphics: Graphics) {
+    override fun onDraw(graphics: Graphics) {
         graphics.color = Color.DARK_GRAY
         graphics.fillRect(0, 0, width, height)
 
@@ -107,14 +112,12 @@ class MenuView() : View() {
             i += 1
         }
 
-        super.updateDrawing(graphics)
+        super.onDraw(graphics)
     }
 
     override fun updateInput() {
-        super.updateInput()
-
         buffer.forEach {
-            when(it) {
+            when(it.keyCode) {
                 KeyEvent.VK_W, KeyEvent.VK_UP -> { selectedItem -= 1; if(selectedItem < 0) { selectedItem = items.count() - 1 } }
                 KeyEvent.VK_S, KeyEvent.VK_DOWN -> { selectedItem += 1; if(selectedItem > items.count() - 1) { selectedItem = 0 }}
                 KeyEvent.VK_ENTER -> { selectItem(selectedItem) }
@@ -124,6 +127,7 @@ class MenuView() : View() {
             }
         }
 
-        buffer.clear() // очистить буффер
+        super.updateInput()
+        clearKeyBuffer() // очистить буффер
     }
 }

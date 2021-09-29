@@ -72,44 +72,88 @@ object CollisionHelper {
 
     // проверить, соприкасается ли энтити с блоком слева
     fun isCollideBlockHorizontalLeft(entity: Entity, block: Block): Boolean {
-        val offset = Constants.COLLIDE_MARGIN
-        if(entity.position.x < (block.position.x + block.size.w)) {
-            if(entity.position.x > (block.position.x + block.size.w - offset)) {
-                return true
-            }
+        val p0 = Rectangle().also {
+            it.x = entity.position.x - Constants.COLLIDE_MARGIN
+            it.y = entity.position.y
+            it.width = entity.size.w
+            it.height = entity.size.h
         }
+
+        val p1 = Rectangle().also {
+            it.x = block.position.x
+            it.y = block.position.y
+            it.width = block.size.w
+            it.height = block.size.h
+        }
+
+        if(p0.intersects(p1))
+            return true
 
         return false
     }
 
     // проверить, соприкасается ли энтити с блоком справа
     fun isCollideBlockHorizontalRight(entity: Entity, block: Block): Boolean {
-        val offset = Constants.COLLIDE_MARGIN
-        if((entity.position.x + entity.size.w) > block.position.x) {
-            if((entity.position.x + entity.size.w - offset) < block.position.x) {
-                return true
-            }
+        val p0 = Rectangle().also {
+            it.x = entity.position.x
+            it.y = entity.position.y
+            it.width = entity.size.w + Constants.COLLIDE_MARGIN
+            it.height = entity.size.h
         }
+
+        val p1 = Rectangle().also {
+            it.x = block.position.x
+            it.y = block.position.y
+            it.width = block.size.w
+            it.height = block.size.h
+        }
+
+        if(p0.intersects(p1))
+            return true
 
         return false
     }
 
     // проверить, соприкасается ли энтити с блоком внизу
     fun isCollideBlockVerticalBottom(entity: Entity, block: Block): Boolean {
-        val offset = Constants.COLLIDE_MARGIN
-        if((entity.position.y + entity.size.h - offset) < (block.position.y)) {
-            return true
+        val p0 = Rectangle().also {
+            it.x = entity.position.x
+            it.y = entity.position.y
+            it.width = entity.size.w
+            it.height = entity.size.h + Constants.COLLIDE_MARGIN
         }
+
+        val p1 = Rectangle().also {
+            it.x = block.position.x
+            it.y = block.position.y
+            it.width = block.size.w
+            it.height = block.size.h
+        }
+
+        if(p0.intersects(p1))
+            return true
 
         return false
     }
 
     // проверить, соприкасается ли энтити с блоком вверху
     fun isCollideBlockVerticalTop(entity: Entity, block: Block): Boolean {
-        val offset = Constants.COLLIDE_MARGIN
-        if((entity.position.y) > (block.position.y + block.size.h - offset)) {
-            return true
+        val p0 = Rectangle().also {
+            it.x = entity.position.x
+            it.y = entity.position.y - Constants.COLLIDE_MARGIN
+            it.width = entity.size.w
+            it.height = entity.size.h
         }
+
+        val p1 = Rectangle().also {
+            it.x = block.position.x
+            it.y = block.position.y
+            it.width = block.size.w
+            it.height = block.size.h
+        }
+
+        if(p0.intersects(p1))
+            return true
 
         return false
     }

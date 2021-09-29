@@ -1,26 +1,35 @@
 package engine.view
 
+import engine.render.Camera
 import engine.Constants
-import engine.Globals
-import engine.toolkit.Loader
+import engine.command.CommandInterpreter
+import engine.toolkit.ViewLoader
+import engine.toolkit.WorldLoader
 import engine.type.World
-import engine.type.Size
+import engine.ui.UICommandInput
+import engine.ui.etc.UIKey
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyEvent
 import kotlin.concurrent.thread
 
 class GameView() : View() {
-    private val world = World(
-        Size(0, 0)
-    )
+    lateinit var world: World
+    lateinit var camera: Camera
 
     override fun createWindow() {
         super.createWindow()
+
+        addUiElement("command", UICommandInput() {
+            CommandInterpreter.exec(this, it)
+        })
     }
 
     fun loadWorld(name: String) {
-        Loader.loadWorld(world, name)
+        world = World(name)
+        WorldLoader.load(world, name)
+
+        camera = Camera(world)
     }
 
     override fun startBackgroundLoops() {
@@ -36,37 +45,36 @@ class GameView() : View() {
 
     override fun updateInput() {
         super.updateInput()
-        world.entitiesManager.getPlayer().also { it?.updateInput(buffer) }
 
-        buffer.forEach {
-            when(it) {
+        world.entitiesManager.getPlayer().also { it?.updateInput(buffer.clone() as List<UIKey>) }
+
+        (buffer.clone() as List<UIKey>).forEach {
+            when(it.keyCode) {
                 KeyEvent.VK_ESCAPE -> {
                     closeWindow()
-                    MenuView().also {
-                        it.createWindow()
-                    }
+                    ViewLoader.openMenu()
                 }
 
-                KeyEvent.VK_F2 -> {
-                    if(Globals.DEBUG_MODE)
-                        world.entitiesManager.getPlayer()?.also {
-                            it.position.x = 0
-                            it.position.y = 0
-                        }
+                KeyEvent.VK_SLASH -> {
+                    getUiElement("command").also { it.isVisible = !it.isVisible }
+                    getUiElement("command").also { it.isEnabled = !it.isEnabled }
+
+                    clearKeyBuffer()
                 }
             }
         }
     }
 
-    override fun updateDrawing(graphics: Graphics) {
+    override fun onDraw(graphics: Graphics) {
         // заполняем фон
         graphics.color = Color(96, 96 ,199)
         graphics.fillRect(0, 0, width, height)
 
         // отрисовываем мир
-        world.drawAll(graphics)
+        camera.drawAll(graphics)
+        //world.drawAll(graphics)
 
         // запускаем оригинальную функцию отрисовку
-        super.updateDrawing(graphics)
+        super.onDraw(graphics)
     }
 }

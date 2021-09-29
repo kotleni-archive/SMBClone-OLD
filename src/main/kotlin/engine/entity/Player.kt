@@ -1,14 +1,16 @@
 package engine.entity
 
+import engine.Globals
+import engine.render.CameraFocus
 import engine.type.Direction
 import engine.type.World
 import engine.type.Size
-import java.awt.Color
+import engine.ui.etc.UIKey
 import java.awt.Graphics
 import java.awt.event.KeyEvent
 import kotlin.concurrent.thread
 
-class Player(override var world: World) : Entity(world) {
+class Player(override var world: World) : Entity(world), CameraFocus {
     override val size = Size(32, 32)
     var direction = Direction.RIGHT
 
@@ -24,13 +26,12 @@ class Player(override var world: World) : Entity(world) {
     }
 
     override fun draw(g: Graphics) {
-        g.color = Color.BLACK
-        g.fillRect(position.x, position.y, size.w, size.h)
+        g.drawImage(Globals.textureLoader!!.getTexture("player"), position.x, position.y, size.w, size.h, null)
     }
 
-    fun updateInput(keys: ArrayList<Int>) {
+    fun updateInput(keys: List<UIKey>) {
         keys.forEach {
-            when(it) {
+            when(it.keyCode) {
                 KeyEvent.VK_A, KeyEvent.VK_LEFT -> { // left
                     direction = Direction.LEFT
                     if(isCanMove(Direction.LEFT))

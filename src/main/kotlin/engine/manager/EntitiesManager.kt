@@ -19,7 +19,18 @@ class EntitiesManager(var world: World) {
         return entities[id]
     }
 
-    fun getEntitiesList(): List<Entity> {
+    fun getEntitiesList(isHidePlayer: Boolean = false): List<Entity> {
+        if(isHidePlayer) {
+            val buff = ArrayList<Entity>()
+            entities.forEach {
+                if(!(it is Player)) { // если не игрок
+                    buff.add(it)
+                }
+            }
+
+            return buff
+        }
+
         return entities
     }
 

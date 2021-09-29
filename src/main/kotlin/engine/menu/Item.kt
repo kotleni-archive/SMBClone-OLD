@@ -2,5 +2,6 @@ package engine.menu
 
 data class Item(
     var title: String,
-    var isEnabled: Boolean
+    var isEnabled: Boolean,
+    var onSelected: () -> Unit
 )
