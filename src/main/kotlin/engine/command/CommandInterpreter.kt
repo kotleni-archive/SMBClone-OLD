@@ -29,6 +29,16 @@ object CommandInterpreter {
                 Globals.DRAW_BLOCKRECT = true
             }
 
+            "testdraw" -> {
+                var i = 0
+                view.world.blocksManager.getBlocksList().forEach {
+                    if(view.camera.isBlockInCamera(it))
+                        i += 1
+                }
+
+                LOG("Blocks in camera: $i")
+            }
+
             else -> { LOG("Unknown command: $line"); return }
         }
 

@@ -37,9 +37,9 @@ class Player(override var world: World) : Entity(world), CameraFocus {
     }
 
     override fun draw(g: Graphics) {
-        animator.map.also {
-            it.isFlip = (direction != Direction.LEFT)
-            it.draw(g, position,  size, if(isGrounded()) animator.getCurrentFrame() else 5)
+        animator.map.apply {
+            isFlip = (direction != Direction.LEFT)
+            draw(g, position,  size, if(isGrounded()) animator.getCurrentFrame() else 5)
         }
         //g.drawImage(Globals.spriteLoader!!.getSpriteMap("player")., position.x, position.y, size.w, size.h, null)
     }

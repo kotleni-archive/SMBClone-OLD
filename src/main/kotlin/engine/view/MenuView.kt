@@ -6,11 +6,14 @@ import engine.menu.Item
 import engine.toolkit.ViewLoader
 import engine.toolkit.WorldLoader
 import engine.ui.UIText
+import engine.ui.etc.UIKey
 import java.awt.Color
+import java.awt.Desktop
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.event.KeyEvent
 import java.awt.font.FontRenderContext
+import java.net.URI
 
 
 class MenuView() : View() {
@@ -25,6 +28,9 @@ class MenuView() : View() {
         Item("ТЕСТОВАЯ КОМНАТА", true) {
             closeWindow()
             ViewLoader.openGameInWorld("test_room")
+        },
+        Item("СКАЧАТЬ МИРЫ", true) {
+            Desktop.getDesktop().browse(URI("http://api.hjee.xyz/worlds/"))
         },
         Item("ВЫХОД", true) {
             closeWindow()
@@ -111,7 +117,7 @@ class MenuView() : View() {
     }
 
     override fun updateInput() {
-        buffer.forEach {
+        (buffer.clone() as ArrayList<UIKey>).forEach {
             when(it.keyCode) {
                 KeyEvent.VK_W, KeyEvent.VK_UP -> { selectedItem -= 1; if(selectedItem < 0) { selectedItem = items.count() - 1 } }
                 KeyEvent.VK_S, KeyEvent.VK_DOWN -> { selectedItem += 1; if(selectedItem > items.count() - 1) { selectedItem = 0 }}

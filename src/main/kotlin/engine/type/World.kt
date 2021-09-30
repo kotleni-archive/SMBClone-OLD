@@ -9,6 +9,7 @@ import engine.render.Camera
 import engine.render.CameraFocus
 import engine.view.GameView
 import java.awt.Graphics
+import kotlin.concurrent.thread
 
 class World(var gameView: GameView, var name: String) {
     val size = Size(0, 0)

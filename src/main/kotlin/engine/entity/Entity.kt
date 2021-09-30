@@ -19,8 +19,7 @@ open class Entity(open var world: World) {
     open fun isGrounded(): Boolean {
         world.blocksManager.getBlocksList().forEach {
             if(world.gameView.camera.isBlockInCamera(it)) {
-
-                if (this.isCanMoveUp() && !this.isCanMoveDown())
+                if (!this.isCanMoveDown()) // deleted: isCanMoveUp() &&
                     return true
             }
         }
@@ -31,16 +30,6 @@ open class Entity(open var world: World) {
     // если нахоидтся в пределах мира
     open fun isInWorld(): Boolean {
         return CollisionHelper.isCollideEntityWithWorld(this, world)
-    }
-
-    // если касается любого блока
-    open fun isCollideAnyBlock(): Boolean {
-        world.blocksManager.getBlocksList().forEach {
-            if(isCollide(it))
-                return true
-        }
-
-        return false
     }
 
     // если касается другого энтити

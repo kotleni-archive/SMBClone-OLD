@@ -75,7 +75,7 @@ class GameView() : View() {
         camera.drawAll(graphics)
         //world.drawAll(graphics, camera)
 
-        // запускаем оригинальную функцию отрисовку
+        // запускаем оригинальную функцию отрисовки
         super.onDraw(graphics)
     }
 }
