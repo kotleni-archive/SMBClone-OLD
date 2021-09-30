@@ -25,12 +25,11 @@ class MenuView() : View() {
             closeWindow()
             ViewLoader.openGameInWorld("world1")
         },
+        Item("МУЛЬТИПЛЕЕР", false) {
+        },
         Item("ТЕСТОВАЯ КОМНАТА", true) {
             closeWindow()
             ViewLoader.openGameInWorld("test_room")
-        },
-        Item("СКАЧАТЬ МИРЫ", true) {
-            Desktop.getDesktop().browse(URI("http://api.hjee.xyz/worlds/"))
         },
         Item("ВЫХОД", true) {
             closeWindow()

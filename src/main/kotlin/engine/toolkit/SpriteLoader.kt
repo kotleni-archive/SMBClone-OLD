@@ -11,6 +11,7 @@ class SpriteLoader() {
     private val array = HashMap<String, Sprite>()
 
     fun loadAll() {
+        array.clone()
         LOG("Загрузка спрайтов")
 
         // получаем папку с текстурами

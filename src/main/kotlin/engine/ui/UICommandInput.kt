@@ -8,17 +8,18 @@ import java.awt.Graphics
 import java.awt.event.KeyEvent
 import java.awt.font.FontRenderContext
 
-class UICommandInput(var onCommand: ((line: String) -> Unit)) : UIElement() {
+class UICommandInput(var onCommand: ((line: String) -> String)) : UIElement() {
     override var isVisible: Boolean = false
     override var isEnabled: Boolean = false
 
     var inputLine = ""
+    var outputLine = ""
 
     override fun onDraw(g: Graphics) {
         val margin = 16
         g.font = Font("monospace", Font.BOLD, 14)
         val frc = FontRenderContext(null, true, true)
-        val bounds = g.font.getStringBounds(inputLine, frc)
+        val bounds = g.font.getStringBounds("/$inputLine", frc)
 
         g.color = Color(0, 0, 0, 180)
         g.fillRect(
@@ -27,7 +28,8 @@ class UICommandInput(var onCommand: ((line: String) -> Unit)) : UIElement() {
         )
 
         g.color = Color.WHITE
-        g.drawString(inputLine, margin, Globals.WINDOW_HEIGHT - margin)
+        g.drawString("/$inputLine", margin, Globals.WINDOW_HEIGHT - margin)
+        g.drawString(outputLine, margin, (Globals.WINDOW_HEIGHT - margin) - bounds.height.toInt() - margin)
     }
 
     override fun onInput(keys: List<UIKey>): Boolean {
@@ -41,12 +43,12 @@ class UICommandInput(var onCommand: ((line: String) -> Unit)) : UIElement() {
 
                 KeyEvent.VK_ENTER -> {
                     if(inputLine.isNotEmpty()) {
-                        onCommand.invoke(inputLine)
+                        outputLine = onCommand.invoke(inputLine)
                         inputLine = ""
+                    } else {
+                        isEnabled = false
+                        isVisible = false
                     }
-
-                    isEnabled = false
-                    isVisible = false
                 }
 
                 else -> { if(it.keyChar.toInt() != 65535) { inputLine += it.keyChar} }

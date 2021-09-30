@@ -11,20 +11,27 @@ import java.io.File
 import javax.imageio.ImageIO
 
 object WorldLoader {
-    fun compileAll(force: Boolean = false) {
+    fun compileAll(force: Boolean = false): Int /* количество варнингов */ {
         // LOG("Проверка не скомпилированных карт")
         val url = javaClass.classLoader.getResource("worlds/")
         val list = File(url!!.file!!).listFiles()
+
+        var warns = 0
 
         list.forEach {
             val cur = File(it.path) // fix stupid java
 
             if(cur.extension == "png") {
-                compile(cur.nameWithoutExtension, force)
+                val _w = compile(cur.nameWithoutExtension, force)
+                warns += _w
             }
         }
+
+        return warns
     }
-    fun compile(name: String, force: Boolean) {
+
+    fun compile(name: String, force: Boolean): Int /* количество варнингов */ {
+        var warns = 0
         // получаем оригинальный файл
         val url = javaClass.classLoader.getResource("worlds/$name.png")
         val file = File(url?.file!!)
@@ -34,7 +41,7 @@ object WorldLoader {
         val file2 = File("${file.parentFile.path}\\$name.json")
 
         // не компилируем, если уже есть
-        if(file2.exists() && !force) { return }
+        if(file2.exists() && !force) { return 0 }
 
         LOG("Компиляция карты: $name")
 
@@ -63,7 +70,7 @@ object WorldLoader {
                         Color(0, 0, 255) -> "trap"
                         Color(0, 255, 255) -> "bonus"
                         Color(255, 255, 255) -> "" // воздух
-                        else -> { println("ERROR, UNKNOWN BLOCK: ${clr}"); "" }
+                        else -> { println("ERROR, UNKNOWN BLOCK: ${clr}"); warns += 1; "" }
                     })
                     put("pos", JSONArray().apply { put(x * 16); put(y * 16) })
                     put("size", JSONArray().apply { put(16); put(16) })
@@ -92,6 +99,25 @@ object WorldLoader {
         file2.writeText(json.toString())
 
         LOG("Карта скомпилирована, ${file2.readBytes().size} байт")
+
+        return warns
+    }
+
+    fun listWorlds(): List<String> {
+        val tmp = ArrayList<String>()
+
+        val url = javaClass.classLoader.getResource("worlds/")
+        val list = File(url!!.file!!).listFiles()
+
+        list.forEach {
+            val cur = File(it.path) // fix stupid java
+
+            if(cur.extension == "json") {
+                tmp.add(cur.nameWithoutExtension)
+            }
+        }
+
+        return tmp
     }
 
     fun load(world: World, name: String): Boolean {

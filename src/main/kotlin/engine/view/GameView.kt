@@ -22,7 +22,7 @@ class GameView() : View() {
         super.createWindow()
 
         addUiElement("command", UICommandInput() {
-            CommandInterpreter.exec(this, it)
+            return@UICommandInput CommandInterpreter.exec(this, it)
         })
     }
 

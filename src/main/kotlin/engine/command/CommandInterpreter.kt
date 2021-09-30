@@ -8,25 +8,33 @@ import engine.type.Pos
 import engine.view.GameView
 
 object CommandInterpreter {
-    fun exec(view: GameView, line: String) {
+    fun exec(view: GameView, line: String): String {
+        var output = ""
         val pars = line.split(" ")
+        LOG("Exec command: $line")
 
         when(pars[0]) {
+            "help" -> {
+                return "help, load, recompile, teleport, testblock, testdraw, words, reload"
+            }
             "load" -> {
                 view.closeWindow()
                 ViewLoader.openGameInWorld(pars[1])
             }
 
             "recompile" -> {
-                WorldLoader.compileAll(true)
+                val warns = WorldLoader.compileAll(true)
+                return "Все миры перекомпилированы! Предупреждений: $warns"
             }
 
             "teleport" -> {
                 view.world.getPlayer()?.teleport(Pos(pars[1].toInt(), pars[2].toInt()))
+                return "Игрок телепортирован на позицию: ${pars[1]}, ${pars[2]}"
             }
 
             "testblock" -> {
                 Globals.DRAW_BLOCKRECT = true
+                return "Включен режим отображения границ блоков"
             }
 
             "testdraw" -> {
@@ -36,12 +44,24 @@ object CommandInterpreter {
                         i += 1
                 }
 
-                LOG("Blocks in camera: $i")
+                LOG("Блоков отображается: $i")
+                return "Блоков отображается: $i"
             }
 
-            else -> { LOG("Unknown command: $line"); return }
-        }
+            "worlds" -> {
+                var str = ""
+                WorldLoader.listWorlds().forEach { str += "$str, " }
 
-        LOG("Executed command: $line")
+                return str
+            }
+
+            "reload" -> {
+                Globals.spriteLoader?.loadAll()
+                return "Все текстуры были перезагружены."
+            }
+
+            else -> { LOG("Unknown command: $line"); return "Не известная комманда: $line" }
+        }
+        return output
     }
 }
