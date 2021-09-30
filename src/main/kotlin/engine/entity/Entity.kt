@@ -18,8 +18,11 @@ open class Entity(open var world: World) {
     // если стоит на земле
     open fun isGrounded(): Boolean {
         world.blocksManager.getBlocksList().forEach {
-            if(this.isCanMoveUp() && !this.isCanMoveDown())
-                return true
+            if(world.gameView.camera.isBlockInCamera(it)) {
+
+                if (this.isCanMoveUp() && !this.isCanMoveDown())
+                    return true
+            }
         }
 
         return false
@@ -47,12 +50,15 @@ open class Entity(open var world: World) {
 
     // если касается блока
     open fun isCollide(block: Block): Boolean {
+        if(!world.gameView.camera.isBlockInCamera(block)) return false
+
         return CollisionHelper.isCollideEntityWithBlock(this, block)
     }
 
     // если может двигаться в верх
     open fun isCanMoveUp(): Boolean {
         world.blocksManager.getBlocksList().forEach {
+            if(world.gameView.camera.isBlockInCamera(it))
             if(CollisionHelper.isCollideBlockVerticalTop(this, it)) { // если не может
                 return false
             }
@@ -64,6 +70,7 @@ open class Entity(open var world: World) {
     // если может двигаться вниз
     open fun isCanMoveDown(): Boolean {
         world.blocksManager.getBlocksList().forEach {
+            if(world.gameView.camera.isBlockInCamera(it))
             if(CollisionHelper.isCollideBlockVerticalBottom(this, it)) { // если не может
                 return false
             }
@@ -75,6 +82,7 @@ open class Entity(open var world: World) {
     // если энтити может подвинуться
     open fun isCanMove(direction: Direction): Boolean {
         world.blocksManager.getBlocksList().forEach {
+            if(world.gameView.camera.isBlockInCamera(it))
             if(!CollisionHelper.isCollideBlockVerticalTop(this, it)) {
                 if(when(direction) { // проверка на колизиию по сторонам
                     Direction.LEFT -> { CollisionHelper.isCollideBlockHorizontalLeft(this, it) }

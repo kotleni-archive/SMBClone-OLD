@@ -30,7 +30,7 @@ class UICommandInput(var onCommand: ((line: String) -> Unit)) : UIElement() {
         g.drawString(inputLine, margin, Globals.WINDOW_HEIGHT - margin)
     }
 
-    override fun onInput(keys: List<UIKey>) {
+    override fun onInput(keys: List<UIKey>): Boolean {
         keys.forEach {
             when(it.keyCode) {
                 KeyEvent.VK_BACK_SPACE -> {
@@ -52,5 +52,7 @@ class UICommandInput(var onCommand: ((line: String) -> Unit)) : UIElement() {
                 else -> { if(it.keyChar.toInt() != 65535) { inputLine += it.keyChar} }
             }
         }
+
+        return true
     }
 }

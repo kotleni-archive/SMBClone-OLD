@@ -4,6 +4,7 @@ import engine.Globals
 import engine.render.CameraFocus
 import engine.render.SpriteMapAnimator
 import engine.type.Direction
+import engine.type.Pos
 import engine.type.World
 import engine.type.Size
 import engine.ui.etc.UIKey
@@ -15,7 +16,14 @@ class Player(override var world: World) : Entity(world), CameraFocus {
     override val size = Size(32, 32)
     var direction = Direction.RIGHT
 
-    private val animator = SpriteMapAnimator(Globals.spriteLoader!!.getSpriteMap("player"), listOf(2, 3, 4))
+    private val animator = SpriteMapAnimator(Globals.spriteLoader!!.getSpriteMap("player"), listOf(2, 3, 4), 8)
+
+    fun teleport(pos: Pos) { // чтото частично возращает игрока по X
+        position.apply {
+            x += pos.x
+            y += pos.y
+        }
+    }
 
     fun jump() {
         thread { for(i in 0..70) { if(!isCanMoveUp()) { break }; position.y -= 2; Thread.sleep(1) } }
@@ -23,8 +31,8 @@ class Player(override var world: World) : Entity(world), CameraFocus {
 
     fun dash() {
         when(direction) {
-            Direction.LEFT -> { thread { for(i in 0..60) { if(!isCanMove(direction)) { break }; position.x -= 1; Thread.sleep(1) } } }
-            Direction.RIGHT -> { thread { for(i in 0..60) { if(!isCanMove(direction)) { break }; position.x += 1; Thread.sleep(1) } } }
+            Direction.LEFT -> { thread { for(i in 0..2) { if(!isCanMove(direction)) { break }; position.x -= 1; Thread.sleep(2) } } }
+            Direction.RIGHT -> { thread { for(i in 0..2) { if(!isCanMove(direction)) { break }; position.x += 1; Thread.sleep(2) } } }
         }
     }
 
@@ -59,6 +67,7 @@ class Player(override var world: World) : Entity(world), CameraFocus {
                 }
 
                 KeyEvent.VK_SHIFT -> { // dash
+                    animator.doTick()
                     if(isCanMove(direction))
                         dash()
                 }

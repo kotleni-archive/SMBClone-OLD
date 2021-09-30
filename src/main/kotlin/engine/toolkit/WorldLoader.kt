@@ -1,11 +1,8 @@
 package engine.toolkit
 
 import engine.LOG
-import engine.block.Stone
+import engine.block.*
 import engine.type.World
-import engine.block.Brick
-import engine.block.Stone2
-import engine.block.Trap
 import engine.entity.Player
 import org.json.JSONArray
 import org.json.JSONObject
@@ -48,29 +45,39 @@ object WorldLoader {
         val blocks = JSONArray()
         val entities = JSONArray()
 
-        for(x in 0..img.width-1) {
-            for(y in 0..img.height-1) {
+        var lastObj: JSONObject? = null
+        for(x in 0 until img.width) {
+            if(lastObj != null) {
+                blocks.put(lastObj)
+                lastObj = null
+            }
+            for(y in 0 until img.height) {
                 val pix = img.getRGB(x, y)
                 val clr = Color(pix)
 
-                blocks.put(JSONObject().also {
-                    it.put("type", when(clr) {
+                val newobj = JSONObject().apply {
+                    put("type", when(clr) {
                         Color(0, 0, 0) -> "brick"
                         Color(255, 0, 0) -> "stone"
                         Color(0, 255, 0) -> "stone2"
                         Color(0, 0, 255) -> "trap"
-                        else -> "/"
+                        Color(0, 255, 255) -> "bonus"
+                        Color(255, 255, 255) -> "" // воздух
+                        else -> { println("ERROR, UNKNOWN BLOCK: ${clr}"); "" }
                     })
-                    it.put("pos", JSONArray().also { it.put(x * 16); it.put(y * 16) })
-                    it.put("size", JSONArray().also { it.put(16); it.put(16) })
-                })
+                    put("pos", JSONArray().apply { put(x * 16); put(y * 16) })
+                    put("size", JSONArray().apply { put(16); put(16) })
+                }
 
-                if(clr.red == 0 && clr.green == 255 && clr.blue == 0) { // stone
-                    blocks.put(JSONObject().also {
-                        it.put("type", "stone")
-                        it.put("pos", JSONArray().also { it.put(x * 16); it.put(y * 16) })
-                        it.put("size", JSONArray().also { it.put(16); it.put(16) })
+                // если блоки одного типа
+                if(lastObj != null && /* если не воздух */ clr != Color(255, 255, 255) && lastObj.getString("type") == newobj.getString("type")) {
+                    lastObj.put("size", JSONArray().apply {
+                        put(lastObj!!.getJSONArray("size").getInt(0))
+                        put(lastObj!!.getJSONArray("size").getInt(1) + 16)
                     })
+                } else if(/* если не воздух */true) {
+                    blocks.put(newobj)
+                    lastObj = newobj
                 }
             }
         }
@@ -141,6 +148,14 @@ object WorldLoader {
                 }
                 "trap" -> {
                     world.blocksManager.addBlock(Trap(world).also {
+                        it.position.x = block.getJSONArray("pos").getInt(0)
+                        it.position.y = block.getJSONArray("pos").getInt(1)
+                        it.size.w = block.getJSONArray("size").getInt(0)
+                        it.size.h = block.getJSONArray("size").getInt(1)
+                    })
+                }
+                "bonus" -> {
+                    world.blocksManager.addBlock(Bonus(world).also {
                         it.position.x = block.getJSONArray("pos").getInt(0)
                         it.position.y = block.getJSONArray("pos").getInt(1)
                         it.size.w = block.getJSONArray("size").getInt(0)

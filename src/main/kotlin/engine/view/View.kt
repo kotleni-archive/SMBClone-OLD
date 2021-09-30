@@ -7,9 +7,12 @@ import engine.LOG
 import engine.listener.GameKeyListener
 import engine.toolkit.SpriteLoader
 import engine.toolkit.TpsMetter
+import engine.type.Size
 import engine.ui.UIElement
 import engine.ui.etc.UIKey
 import java.awt.*
+import java.awt.event.ComponentEvent
+import java.awt.event.ComponentListener
 import javax.swing.JFrame
 import kotlin.concurrent.thread
 
@@ -26,6 +29,8 @@ open class View() : JFrame(), GameKeyListener {
             uiElements[name] = el
         else
             uiElements.put(name, el)
+
+        el.onSizeChanged(Size(width, height))
     }
 
     fun getUiElement(name: String): UIElement {
@@ -36,15 +41,45 @@ open class View() : JFrame(), GameKeyListener {
         uiElements.remove(name)
     }
 
+    open fun onResize(w: Int, h: Int) {
+        Globals.WINDOW_WIDTH = w
+        Globals.WINDOW_HEIGHT = h
+
+        (uiElements as HashMap<String, UIElement>).forEach {
+            it.value.onSizeChanged(
+                Size(w, h)
+            )
+        }
+    }
+
     open fun createWindow() {
         this.size =  Dimension(1000, 600)
         Globals.WINDOW_WIDTH = this.size.width
         Globals.WINDOW_HEIGHT = this.size.height
         this.title = Constants.WINDOW_NAME
         this.defaultCloseOperation = EXIT_ON_CLOSE
+        this.extendedState = MAXIMIZED_BOTH
         this.isVisible = true
 
         this.initKeyListener(this)
+        addComponentListener(object: ComponentListener {
+            override fun componentResized(p0: ComponentEvent?) {
+                onResize(width, height)
+            }
+
+            override fun componentMoved(p0: ComponentEvent?) {
+
+            }
+
+            override fun componentShown(p0: ComponentEvent?) {
+
+            }
+
+            override fun componentHidden(p0: ComponentEvent?) {
+
+            }
+
+        })
 
         Globals.spriteLoader = SpriteLoader()
         Globals.spriteLoader!!.loadAll()
@@ -100,8 +135,8 @@ open class View() : JFrame(), GameKeyListener {
     open fun updateInput() {
         (uiElements.clone() as HashMap<String, UIElement>).forEach {
             if(it.value.isEnabled) {
-                it.value.onInput(buffer.clone() as List<UIKey>)
-                clearKeyBuffer()
+                val isNeedReset = it.value.onInput(buffer.clone() as List<UIKey>)
+                if(isNeedReset) clearKeyBuffer()
             }
         }
 

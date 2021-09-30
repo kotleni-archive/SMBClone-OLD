@@ -7,9 +7,10 @@ import engine.manager.EntitiesManager
 import engine.manager.PhysicsManager
 import engine.render.Camera
 import engine.render.CameraFocus
+import engine.view.GameView
 import java.awt.Graphics
 
-class World(var name: String) {
+class World(var gameView: GameView, var name: String) {
     val size = Size(0, 0)
 
     val entitiesManager = EntitiesManager(this)

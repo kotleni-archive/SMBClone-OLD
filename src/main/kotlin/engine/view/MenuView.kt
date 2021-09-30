@@ -35,11 +35,11 @@ class MenuView() : View() {
 
     override fun createWindow() {
         super.createWindow()
-        addUiElement("label1", UIText().also {
-            it.position.x = Globals.WINDOW_WIDTH - 170
-            it.position.y = Globals.WINDOW_HEIGHT - 20
-
-            it.text = "https://github.com/kotleni"
+        addUiElement("label1", UIText("https://github.com/kotlenis").apply {
+            setOnSizeChanged {
+                position.x = it.w - 170
+                position.y = it.h - 20
+            }
         })
 
         // высчитываем максимальный размер плитки выбора

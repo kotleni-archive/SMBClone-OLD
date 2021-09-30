@@ -8,5 +8,7 @@ object Globals {
     var WINDOW_WIDTH = 0
     var WINDOW_HEIGHT = 0
 
+    var DRAW_BLOCKRECT = false
+
     var spriteLoader: SpriteLoader? = null
 }

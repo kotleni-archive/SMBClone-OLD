@@ -7,6 +7,7 @@ import engine.toolkit.ViewLoader
 import engine.toolkit.WorldLoader
 import engine.type.World
 import engine.ui.UICommandInput
+import engine.ui.UIText
 import engine.ui.etc.UIKey
 import java.awt.Color
 import java.awt.Graphics
@@ -26,7 +27,7 @@ class GameView() : View() {
     }
 
     fun loadWorld(name: String) {
-        world = World(name)
+        world = World(this, name)
         WorldLoader.load(world, name)
 
         camera = Camera(world)
@@ -72,7 +73,7 @@ class GameView() : View() {
 
         // отрисовываем мир
         camera.drawAll(graphics)
-        //world.drawAll(graphics)
+        //world.drawAll(graphics, camera)
 
         // запускаем оригинальную функцию отрисовку
         super.onDraw(graphics)

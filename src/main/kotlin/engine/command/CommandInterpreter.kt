@@ -4,6 +4,7 @@ import engine.Globals
 import engine.LOG
 import engine.toolkit.ViewLoader
 import engine.toolkit.WorldLoader
+import engine.type.Pos
 import engine.view.GameView
 
 object CommandInterpreter {
@@ -11,20 +12,21 @@ object CommandInterpreter {
         val pars = line.split(" ")
 
         when(pars[0]) {
-            "load", "world" -> {
+            "load" -> {
                 view.closeWindow()
                 ViewLoader.openGameInWorld(pars[1])
             }
 
-            "recompile", "compile" -> {
+            "recompile" -> {
                 WorldLoader.compileAll(true)
             }
 
-            "teleport", "tp" -> {
-                view.world.getPlayer()?.also {
-                    it.position.x = pars[1].toInt()
-                    it.position.y = pars[2].toInt()
-                }
+            "teleport" -> {
+                view.world.getPlayer()?.teleport(Pos(pars[1].toInt(), pars[2].toInt()))
+            }
+
+            "testblock" -> {
+                Globals.DRAW_BLOCKRECT = true
             }
 
             else -> { LOG("Unknown command: $line"); return }
