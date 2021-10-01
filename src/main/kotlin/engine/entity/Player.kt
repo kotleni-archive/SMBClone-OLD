@@ -14,20 +14,7 @@ import kotlin.concurrent.thread
 
 class Player(override var world: World) : Entity(world), CameraFocus {
     override val size = Size(32, 32)
-    var direction = Direction.RIGHT
-
-    private val animator = SpriteMapAnimator(Globals.spriteLoader!!.getSpriteMap("player"), listOf(2, 3, 4), 8)
-
-    fun teleport(pos: Pos) { // чтото частично возращает игрока по X
-        position.apply {
-            x += pos.x
-            y += pos.y
-        }
-    }
-
-    fun jump() {
-        thread { for(i in 0..70) { if(!isCanMoveUp()) { break }; position.y -= 2; Thread.sleep(1) } }
-    }
+    override val animator = SpriteMapAnimator(Globals.spriteLoader!!.getSpriteMap("player"), listOf(2, 3, 4), 8)
 
     fun dash() {
         when(direction) {
@@ -36,7 +23,7 @@ class Player(override var world: World) : Entity(world), CameraFocus {
         }
     }
 
-    override fun draw(g: Graphics) {
+    override fun onDraw(g: Graphics) {
         animator.map.apply {
             isFlip = (direction != Direction.LEFT)
             draw(g, position,  size, if(isGrounded()) animator.getCurrentFrame() else 5)
@@ -50,14 +37,14 @@ class Player(override var world: World) : Entity(world), CameraFocus {
                 KeyEvent.VK_A, KeyEvent.VK_LEFT -> { // left
                     animator.doTick()
                     direction = Direction.LEFT
-                    if(isCanMove(Direction.LEFT))
+                    if(isInWorld() && isCanMove(Direction.LEFT))
                         position.x -= 2
                 }
 
                 KeyEvent.VK_D, KeyEvent.VK_RIGHT -> { // right
                     animator.doTick()
                     direction = Direction.RIGHT
-                    if(isCanMove(Direction.RIGHT))
+                    if(isInWorld() && isCanMove(Direction.RIGHT))
                         position.x += 2
                 }
 

@@ -12,8 +12,18 @@ class PhysicsManager(var world: World) {
         world.entitiesManager.getEntitiesList().forEach { entity ->
             var isNeedFalling = true
 
+            // если за пределами камеры
+            if(!world.gameView.camera.isEntityInCamera(entity)) {
+                isNeedFalling = false
+            }
+
             // если энтити может упасть
             if(!entity.isCanMoveDown()) {
+                isNeedFalling = false
+            }
+
+            // если выпал из мира
+            if(!entity.isInWorld()) {
                 isNeedFalling = false
             }
 

@@ -1,15 +1,12 @@
 package engine.type
 
-import engine.Globals
 import engine.entity.Player
 import engine.manager.BlocksManager
 import engine.manager.EntitiesManager
 import engine.manager.PhysicsManager
 import engine.render.Camera
-import engine.render.CameraFocus
 import engine.view.GameView
 import java.awt.Graphics
-import kotlin.concurrent.thread
 
 class World(var gameView: GameView, var name: String) {
     val size = Size(0, 0)
@@ -23,7 +20,7 @@ class World(var gameView: GameView, var name: String) {
 
         // рисуем всех энтити
         entitiesManager.getEntitiesList(isHidePlayer = true).forEach {
-            it.draw(g)
+            it.onDraw(g)
         }
 
         // рисуем все блоки
@@ -32,7 +29,7 @@ class World(var gameView: GameView, var name: String) {
         }
 
         // рисуем игрока
-        player.draw(g)
+        player.onDraw(g)
     }
 
     fun getPlayer(): Player? {

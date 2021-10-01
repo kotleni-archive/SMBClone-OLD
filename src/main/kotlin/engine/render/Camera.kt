@@ -2,6 +2,7 @@ package engine.render
 
 import engine.Globals
 import engine.block.Block
+import engine.entity.Entity
 import engine.type.World
 import java.awt.Dimension
 import java.awt.Graphics
@@ -30,6 +31,24 @@ class Camera(var world: World) {
             it.y = block.position.y
             it.width = block.size.w
             it.height = block.size.h
+        }
+
+        return cameraRect.intersects(blockRect)
+    }
+
+    fun isEntityInCamera(entity: Entity): Boolean {
+        val cameraRect = Rectangle().also {
+            it.x = getScrollX()
+            it.y = getScrollY()
+            it.width = Globals.WINDOW_WIDTH
+            it.height = Globals.WINDOW_HEIGHT
+        }
+
+        val blockRect = Rectangle().also {
+            it.x = entity.position.x
+            it.y = entity.position.y
+            it.width = entity.size.w
+            it.height = entity.size.h
         }
 
         return cameraRect.intersects(blockRect)

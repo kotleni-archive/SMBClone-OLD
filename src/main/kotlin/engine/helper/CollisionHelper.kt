@@ -4,6 +4,7 @@ import engine.Constants
 import engine.type.World
 import engine.block.Block
 import engine.entity.Entity
+import engine.type.Direction
 import java.awt.Rectangle
 
 object CollisionHelper {
@@ -47,6 +48,29 @@ object CollisionHelper {
             return true
 
         return false
+    }
+
+    fun isSpaceNext(entity: Entity, direction: Direction, world: World): Boolean {
+        val p0 = Rectangle().apply {
+            x = entity.position.x + (if(direction == Direction.LEFT) -(entity.size.w) else entity.size.w)
+            y = entity.position.y + (entity.size.h)
+            width = 2
+            height = 2
+        }
+
+        world.blocksManager.getBlocksList().forEach {
+            val p1 = Rectangle().apply {
+                x = it.position.x
+                y = it.position.y
+                width = it.size.w
+                height = it.size.h
+            }
+
+            if(p0.intersects(p1))
+                return false
+        }
+
+        return true
     }
 
     fun isCollideEntityWithWorld(entity: Entity, world: World): Boolean {

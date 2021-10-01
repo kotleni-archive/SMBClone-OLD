@@ -50,7 +50,7 @@ object CommandInterpreter {
 
             "worlds" -> {
                 var str = ""
-                WorldLoader.listWorlds().forEach { str += "$str, " }
+                WorldLoader.listWorlds().forEach { str += "$it, " }
 
                 return str
             }

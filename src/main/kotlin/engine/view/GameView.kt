@@ -3,6 +3,10 @@ package engine.view
 import engine.render.Camera
 import engine.Constants
 import engine.command.CommandInterpreter
+import engine.entity.Bembi
+import engine.entity.Cat
+import engine.entity.Cat2
+import engine.entity.Luigi
 import engine.toolkit.ViewLoader
 import engine.toolkit.WorldLoader
 import engine.type.World
@@ -31,6 +35,27 @@ class GameView() : View() {
         WorldLoader.load(world, name)
 
         camera = Camera(world)
+
+        world.entitiesManager.addEntity(
+            Luigi(world).apply {
+                position.update(100, 100)
+            }
+        )
+        world.entitiesManager.addEntity(
+            Bembi(world).apply {
+                position.update(120, 100)
+            }
+        )
+        world.entitiesManager.addEntity(
+            Cat(world).apply {
+                position.update(140, 100)
+            }
+        )
+        world.entitiesManager.addEntity(
+            Cat2(world).apply {
+                position.update(160, 100)
+            }
+        )
     }
 
     override fun startBackgroundLoops() {

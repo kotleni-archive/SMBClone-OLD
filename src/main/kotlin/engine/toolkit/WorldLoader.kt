@@ -64,13 +64,15 @@ object WorldLoader {
 
                 val newobj = JSONObject().apply {
                     put("type", when(clr) {
-                        Color(0, 0, 0) -> "brick"
-                        Color(255, 0, 0) -> "stone"
-                        Color(0, 255, 0) -> "stone2"
-                        Color(0, 0, 255) -> "trap"
-                        Color(0, 255, 255) -> "bonus"
+                        Color(0, 0, 0) -> "brick" // керпич
+                        Color(255, 0, 0) -> "stone" // камень
+                        Color(0, 255, 0) -> "stone2" // камень2
+                        Color(0, 0, 255) -> "trap" // мостик
+                        Color(0, 255, 255) -> "bonus" // бонусный блок
+                        Color(255, 255, 0) -> "bonus2" // бонусный блок2 (не активный)
+                        Color(255, 0, 255) -> "mushroom" // гриб (ножка)
                         Color(255, 255, 255) -> "" // воздух
-                        else -> { println("ERROR, UNKNOWN BLOCK: ${clr}"); warns += 1; "" }
+                        else -> { LOG("ОШИБКА, НЕ ВЕРНЫЙ ЦВЕТ БЛОКА: ${clr.red}, ${clr.green}, ${clr.blue}"); warns += 1; "" }
                     })
                     put("pos", JSONArray().apply { put(x * 16); put(y * 16) })
                     put("size", JSONArray().apply { put(16); put(16) })
@@ -109,7 +111,7 @@ object WorldLoader {
         val url = javaClass.classLoader.getResource("worlds/")
         val list = File(url!!.file!!).listFiles()
 
-        list.forEach {
+        list?.forEach {
             val cur = File(it.path) // fix stupid java
 
             if(cur.extension == "json") {
@@ -131,61 +133,77 @@ object WorldLoader {
             return false
         }
 
-        val file = File(url?.file!!)
+        val file = File(url.file!!)
 
         // парсим json
         val json = JSONObject(file.readText())
 
-        val size = json.getJSONArray("size")
+        val _size = json.getJSONArray("size")
         val blocks = json.getJSONArray("blocks")
         val entities = json.getJSONArray("entities")
 
         // получаем размер мира
-        world.size.w = size.getInt(0)
-        world.size.h = size.getInt(1)
+        world.size.w = _size.getInt(0)
+        world.size.h = _size.getInt(1)
 
-        for(i in 0..blocks.length()-1) {
+        for(i in 0 until blocks.length()) {
             val block = blocks.getJSONObject(i)
 
             when(block.getString("type")) {
                 "brick" -> {
-                    world.blocksManager.addBlock(Brick(world).also {
-                        it.position.x = block.getJSONArray("pos").getInt(0)
-                        it.position.y = block.getJSONArray("pos").getInt(1)
-                        it.size.w = block.getJSONArray("size").getInt(0)
-                        it.size.h = block.getJSONArray("size").getInt(1)
+                    world.blocksManager.addBlock(Brick(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
                     })
                 }
                 "stone" -> {
-                    world.blocksManager.addBlock(Stone(world).also {
-                        it.position.x = block.getJSONArray("pos").getInt(0)
-                        it.position.y = block.getJSONArray("pos").getInt(1)
-                        it.size.w = block.getJSONArray("size").getInt(0)
-                        it.size.h = block.getJSONArray("size").getInt(1)
+                    world.blocksManager.addBlock(Stone(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
                     })
                 }
                 "stone2" -> {
-                    world.blocksManager.addBlock(Stone2(world).also {
-                        it.position.x = block.getJSONArray("pos").getInt(0)
-                        it.position.y = block.getJSONArray("pos").getInt(1)
-                        it.size.w = block.getJSONArray("size").getInt(0)
-                        it.size.h = block.getJSONArray("size").getInt(1)
+                    world.blocksManager.addBlock(Stone2(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
                     })
                 }
                 "trap" -> {
-                    world.blocksManager.addBlock(Trap(world).also {
-                        it.position.x = block.getJSONArray("pos").getInt(0)
-                        it.position.y = block.getJSONArray("pos").getInt(1)
-                        it.size.w = block.getJSONArray("size").getInt(0)
-                        it.size.h = block.getJSONArray("size").getInt(1)
+                    world.blocksManager.addBlock(Trap(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
                     })
                 }
                 "bonus" -> {
-                    world.blocksManager.addBlock(Bonus(world).also {
-                        it.position.x = block.getJSONArray("pos").getInt(0)
-                        it.position.y = block.getJSONArray("pos").getInt(1)
-                        it.size.w = block.getJSONArray("size").getInt(0)
-                        it.size.h = block.getJSONArray("size").getInt(1)
+                    world.blocksManager.addBlock(Bonus(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
+                    })
+                }
+                "bonus2" -> {
+                    world.blocksManager.addBlock(Bonus2(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
+                    })
+                }
+                "mushroom" -> {
+                    world.blocksManager.addBlock(Mushroom(world).apply {
+                        position.x = block.getJSONArray("pos").getInt(0)
+                        position.y = block.getJSONArray("pos").getInt(1)
+                        size.w = block.getJSONArray("size").getInt(0)
+                        size.h = block.getJSONArray("size").getInt(1)
                     })
                 }
             }
@@ -196,9 +214,11 @@ object WorldLoader {
         }
 
         // добавляем игрока
-        world.entitiesManager.addEntity(Player(world).also {
-            it.position.x = json.getJSONArray("start_pos").getInt(0)
-            it.position.y = json.getJSONArray("start_pos").getInt(1)
+        world.entitiesManager.addEntity(Player(world).apply {
+            position.update(
+                json.getJSONArray("start_pos").getInt(0),
+                json.getJSONArray("start_pos").getInt(1)
+            )
         })
 
         LOG("Мир загружен: ${world.size.w}x${world.size.h}; Блоков: ${world.blocksManager.getBlocksList().count()}, Энтити: ${world.entitiesManager.getEntitiesList().count()}")

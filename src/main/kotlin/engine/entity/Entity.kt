@@ -1,19 +1,45 @@
 package engine.entity
 
+import engine.Globals
 import engine.type.Direction
 import engine.type.World
 import engine.block.Block
 import engine.helper.CollisionHelper
+import engine.render.SpriteMapAnimator
 import engine.type.Pos
 import engine.type.Size
 import java.awt.Graphics
+import kotlin.concurrent.thread
 
 open class Entity(open var world: World) {
     open val position = Pos(0, 0)
     open val size = Size(0, 0)
+    open var direction = Direction.RIGHT
+
+    open val animator: SpriteMapAnimator? = null
+
+    fun teleport(pos: Pos) { // чтото частично возращает игрока по X
+        position.apply {
+            x += pos.x
+            y += pos.y
+        }
+    }
+
+    fun move(len: Int) {
+        if(isCanMove(direction))
+            when(direction) {
+                Direction.RIGHT -> { position.x += len }
+                Direction.LEFT -> { position.x -= len }
+            }
+    }
+
+    fun jump() {
+        if(isGrounded())
+            thread { for(i in 0..70) { if(!isCanMoveUp()) { break }; position.y -= 2; Thread.sleep(1) } }
+    }
 
     // рисовать энтити
-    open fun draw(g: Graphics) { }
+    open fun onDraw(g: Graphics) { }
 
     // если стоит на земле
     open fun isGrounded(): Boolean {

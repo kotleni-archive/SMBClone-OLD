@@ -13,11 +13,6 @@ fun LOG(msg: Any) {
 }
 
 fun Graphics.drawImageTiled(image: Image, x: Int, y: Int, w: Int, h: Int) {
-    // отключаем отрисовку текстур
-//    color = Color.RED
-//    fillRect(x, y, w, h)
-//    return
-
     var xx = 0
     while(xx < w) {
         var yy = 0
