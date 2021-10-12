@@ -1,3 +1,3 @@
-## TestGame
-Игра написана на Kotlin (используя JFrame).
+## SMBClone
+Simple SMB clone writed in kotlin (using JFrame).
 <img src="./game.png"/>
